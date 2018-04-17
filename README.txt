@@ -1,4 +1,4 @@
-Here, we upload the simulation codes and gunplot scripts for plotting figures for the papr. 
+Here, we upload core codes for numerical calculation and gunplot scripts for plotting figures for the papr. 
 
 There are two folder including core codes.
 One (CN) is for implementing the Crank-Nicolson algorithm to solve the reaction-diffusion equations on the two-dimensional lattice space at constant diffusion coefficients. 
