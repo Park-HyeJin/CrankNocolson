@@ -1,0 +1,26 @@
+reset 
+set t pdfcairo enh
+set output 'TimeEvolution_r2.32_sigma20.pdf'
+unset tics
+set size ratio 1
+a=15
+#f(x, y) = hsv2rgb($3/($3+$4)/3,1,B($3,$4)) #green-red: A
+hue1 = 0.2655
+hue2 = 0.8454
+sat1 = 0.5566
+sat2 = 0.4575
+
+Hue(x, y) = x/(x+y)*hue1 + y/(x+y)*hue2
+Sat(x, y) = x/(x+y)*sat1 + y/(x+y)*sat2
+B(x,y) = (log(a*(x+y))+1)/(log(a)+1)
+f(x, y) = hsv2rgb( Hue(x, y), Sat(x, y), B(x, y))
+set rmargin .2
+set lmargin .2
+set tmargin 0
+set bmargin 0
+set border lw 2
+
+plot 'data/r2.320000_sigma20.000000_L283_t0.000000.d'  u 1:2:(f($3,$4)/256/256):((f($3,$4)%(256*256))/256):(f($3, $4)%(256)) w rgbimage t "" 
+do for [i=1:100]	{																								   
+plot 'data/r2.320000_sigma205.000000_L283_t'.i.'00.000000.d'  u 1:2:(f($3,$4)/256/256):((f($3,$4)%(256*256))/256):(f($3, $4)%(256)) w rgbimage t "" }
+
