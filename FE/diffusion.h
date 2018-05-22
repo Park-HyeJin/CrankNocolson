@@ -39,6 +39,7 @@ struct Eco
 
 void init(Eco &sys, int N, int L, long double death, long double birth, long double cost, long double Dc, long double sigma, long double max, long double r, long double dt, long double dx)
 {
+	sys.max = max;
     sys.N = N;
 	sys.L = L;
 	sys.L2 = sys.L*sys.L;
@@ -194,11 +195,17 @@ long double NonlinearDiffusion(Eco &sys, long double sigma, int x, int y, long d
 	long double temp=0.;
 	long double max = sys.max;
 	int L = sys.L;
+	int fp_exception = fetestexcept(FE_DIVBYZERO | FE_UNDERFLOW | FE_OVERFLOW);
+
 	temp = Dd_ftn(sys, sigma, max, x, y)*lap(sys, x, y, arr);
+	//if (x==141 and y==141) 	cout << x<< " " << y << " " << Dd_ftn(sys, sigma, max, x, y) << " " << lap(sys, x, y, arr) <<  endl;
 	temp += (Dd_ftn(sys, sigma, max, x+1, y)-Dd_ftn(sys, sigma, max, x, y))*(arr[pos(L, x+1, y)]-arr[pos(L, x, y)])/sys.dx/sys.dx/2;
 	temp += (Dd_ftn(sys, sigma, max, x, y)-Dd_ftn(sys, sigma, max, x-1, y))*(arr[pos(L, x, y)]-arr[pos(L, x-1, y)])/sys.dx/sys.dx/2;
 	temp += (Dd_ftn(sys, sigma, max, x, y+1)-Dd_ftn(sys, sigma, max, x, y))*(arr[pos(L, x, y+1)]-arr[pos(L, x, y)])/sys.dx/sys.dx/2;
 	temp += (Dd_ftn(sys, sigma, max, x, y)-Dd_ftn(sys, sigma, max, x, y-1))*(arr[pos(L, x, y)]-arr[pos(L, x, y-1)])/sys.dx/sys.dx/2;
+	if(fp_exception & FE_DIVBYZERO) {cout << "FE_DIVBYZERO\n"; exit(1);}
+	if(fp_exception & FE_UNDERFLOW) {cout << "underflow\n"; exit(1);}
+	if(fp_exception & FE_OVERFLOW) {cout << "overflow\n"; exit(1);}
 	return temp;
 }
 
@@ -282,7 +289,7 @@ void calc(Eco &sys)
 void write(Eco &sys)
 {
     char fname[200];
-	sprintf(fname, "data/r%Lf_sigma%Lf_L%d_t%Lf.d", sys.sigma, sys.r, sys.L, sys.t);
+	sprintf(fname, "data/r%Lf_sigma%Lf_L%d_t%Lf.d", sys.r, sys.sigma,  sys.L, sys.t);
 	
     //write the data : x y u(x,y) v(x,y) 
 	FILE *ofp = fopen(fname, "w");

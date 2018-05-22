@@ -26,11 +26,11 @@ int main (int argc, char** argv)
 	long double Dc = 1.; long double Dd; long double sigma = atof(argv[2]);
 	long double t=0;
 	long double dt=0.005; long double dx=1.4;
-	long double tmax = 100;
+	long double tmax = 10000;
 	long double max = atof(argv[3]);
 
-	int record = (int)(10./dt+0.5);
-	int Nt = tmax/dt+1;
+	int record = (int)(100./dt+0.5);
+	int Nt = (int)((double)tmax/dt+0.5)+1;
 	char str[100];
 	char fname[200];
 
